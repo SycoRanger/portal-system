@@ -9,6 +9,15 @@ SECRET_KEY = config('SECRET_KEY', default='dev-insecure-secret-key-change-me')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
+# Back4App (and most container hosts) terminate HTTPS at a reverse proxy and
+# forward the request internally over HTTP, so Django needs to be told to
+# trust the X-Forwarded-Proto header to correctly detect HTTPS requests.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS', default='https://*.b4a.run,http://localhost:5173'
+).split(',')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
